@@ -1,19 +1,13 @@
 {
-  "name": "typedoc-plugin-example-tag",
-  "version": "1.0.2",
-  "description": "typedoc @example tag plugin",
-  "author": "ardalan amini <ardalanamini22@gmail.com>",
-  "contributors": [
-    "ardalan amini <ardalanamini22@gmail.com>"
-  ],
+  "name": "typedoc-plugin-custom-tags",
+  "version": "1.0.1",
+  "description": "typedoc plugin to define how custom @tags are rendered",
+  "author": "Sebastian Hübner",
   "license": "MIT",
   "keywords": [
-    "typescript",
-    "document",
+    "typedocplugin",
     "typedoc",
-    "plugin",
-    "example",
-    "tag"
+    "tags"
   ],
   "main": "dist/index.js",
   "files": [
@@ -21,27 +15,26 @@
   ],
   "scripts": {
     "build": "tsc",
-    "prepare": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "npm run build"
   },
-  "homepage": "https://github.com/ardalanamini/typedoc-plugin-example-tag#readme",
+  "homepage": "https://github.com/shuebner20/typedoc-plugin-custom-tags",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ardalanamini/typedoc-plugin-example-tag.git"
+    "url": "git+https://github.com/shuebner20/typedoc-plugin-custom-tags.git"
   },
   "bugs": {
-    "url": "https://github.com/ardalanamini/typedoc-plugin-example-tag/issues"
+    "url": "https://github.com/shuebner20/typedoc-plugin-custom-tags/issues"
   },
   "peerDependencies": {
-    "typedoc": ">=0.11.1 <1.0"
+    "typedoc": ">=0.15.0 <1.0"
   },
   "devDependencies": {
-    "@types/node": "^11.9.3",
-    "tslint": "^5.12.1",
-    "typedoc": "^0.14.2",
-    "typescript": "^3.3.3"
-  },
-  "dependencies": {
-    "prototyped.js": "^1.0.0"
+    "@types/fs-extra": "^8.0.0",
+    "@types/node": "^12.7.1",
+    "fs-extra": "^8.1.0",
+    "handlebars": "^4.1.2",
+    "path": "^0.12.7",
+    "typedoc": "^0.15.0",
+    "typescript": "^3.5.3"
   }
 }

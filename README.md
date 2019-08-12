@@ -1,63 +1,177 @@
-# TypeDoc Plugin Example Tag
+# TypeDoc Plugin Custom Tags
 
-typedoc @example tag plugin
+[typedoc](https://github.com/TypeStrong/typedoc) plugin to define how specific custom @tags are rendered.
 
-[![Npm Version](https://img.shields.io/npm/v/typedoc-plugin-example-tag.svg)](https://www.npmjs.com/package/typedoc-plugin-example-tag)
-[![TypeScript Version](https://img.shields.io/npm/types/typedoc-plugin-example-tag.svg)](https://www.typescriptlang.org)
-[![Package Quality](https://npm.packagequality.com/shield/typedoc-plugin-example-tag.svg)](https://packagequality.com/#?package=typedoc-plugin-example-tag)
-[![Npm Total Downloads](https://img.shields.io/npm/dt/typedoc-plugin-example-tag.svg)](https://www.npmjs.com/package/typedoc-plugin-example-tag)
-[![Npm Monthly Downloads](https://img.shields.io/npm/dm/typedoc-plugin-example-tag.svg)](https://www.npmjs.com/package/typedoc-plugin-example-tag)
-[![Open Issues](https://img.shields.io/github/issues-raw/ardalanamini/typedoc-plugin-example-tag.svg)](https://github.com/ardalanamini/typedoc-plugin-example-tag/issues?q=is%3Aopen+is%3Aissue)
-[![Closed Issues](https://img.shields.io/github/issues-closed-raw/ardalanamini/typedoc-plugin-example-tag.svg)](https://github.com/ardalanamini/typedoc-plugin-example-tag/issues?q=is%3Aissue+is%3Aclosed)
-[![Known Vulnerabilities](https://snyk.io/test/github/ardalanamini/typedoc-plugin-example-tag/badge.svg?targetFile=package.json)](https://snyk.io/test/github/ardalanamini/typedoc-plugin-example-tag?targetFile=package.json)
-[![Dependencies Status](https://david-dm.org/ardalanamini/typedoc-plugin-example-tag.svg)](https://david-dm.org/ardalanamini/typedoc-plugin-example-tag)
-[![Pull Requests](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg)](https://github.com/ardalanamini/typedoc-plugin-example-tag/pulls)
-[![License](https://img.shields.io/github/license/ardalanamini/typedoc-plugin-example-tag.svg)](https://github.com/ardalanamini/typedoc-plugin-example-tag/blob/master/LICENSE)
-[![Github Stars](https://img.shields.io/github/stars/ardalanamini/typedoc-plugin-example-tag.svg?style=social&label=Stars)](https://github.com/ardalanamini/typedoc-plugin-example-tag)
-[![Github Forks](https://img.shields.io/github/forks/ardalanamini/typedoc-plugin-example-tag.svg?style=social&label=Fork)](https://github.com/ardalanamini/typedoc-plugin-example-tag)
-
-## Table of Contents <!-- omit in toc -->
-
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Versioning](#versioning)
-- [Authors](#authors)
-- [License](#license)
-- [Support](#support)
-
-## Prerequisites
-
-`npm i -D typedoc`
+This plugin is a fork of [typedoc-plugin-example-tag](https://github.com/ardalanamini/typedoc-plugin-example-tag) by [Ardalan Amini](https://github.com/ardalanamini).
 
 ## Installation
 
-`npm i -D typedoc-plugin-example-tag`
+    npm install --save-dev typedoc-plugin-custom-tags
+    
+typedoc will automatically detect and load the plugin from `node_modules`.
 
 ## Usage
 
-`typedoc ... --plugin typedoc-plugin-example-tag --preferred-example-language javascript ...`
+The configuration of this plugin is described in a JSON file.
 
-> option `preferred-example-language` is set to `typescript` by default
+    typedoc --custom-tags-config typedoc-tags-config.json
+    
+The `typedoc-tags-config.json` structure is either a single configuration object ... 
 
-## Versioning
+  
+    {} extends ICustomTagDeclaration
 
-We use [SemVer](http://semver.org) for versioning. For the versions available, see the [tags on this repository](https://github.com/ardalanamini/typedoc-plugin-example-tag/tags).
+... or a collection of configuration objects two define more than one custom tag ... 
 
-## Authors
+  
+    [
+      {} extends ICustomTagDeclaration,     
+      {} extends ICustomTagDeclaration,     
+      ...
+    ]
 
-- **Ardalan Amini** - *Owner/Developer* - [@ardalanamini](https://github.com/ardalanamini)
+Where the `ICustomTagDeclaration` interface has the following declaration:
 
-See also the list of [contributors](https://github.com/ardalanamini/typedoc-plugin-example-tag/contributors) who participated in this project.
+  
+    interface ICustomTagDeclaration {
+      "tagName": string;
+      "template": string;
+      "combine"?: "none" | "header-ul" | "header-ol" | "ul" | "ol" | "block";
+      "hidden"?: boolean;
+    }
 
-## License
+`tagName` is the expected name of the custom tag. This is the name you will use in your documentation as `@tagName`.
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) file for details
+`template` is the markdown-formatted template for the content of the tag. You can use the `{content}` placeholder within the template to specify where the @tag's content is placed. If this placeholder is emitted, the @tag's content is appended to the end of the template.
 
-## Support
+You can optionally specify how consecutive tags with the same tag name are rendered using the optional `combine` property.
 
-If my work helps you, please consider
+If you (temporarily) want to exclude a specific tag, you can set the optional `hidden` property to `true`.
 
-[![Become A Patron](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/ardalanamini)
+## Simple example
 
-[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ardalanamini)
+Consider the following example for the config JSON file:
+
+  
+    [
+      {
+        "tagName": "myusage",
+        "template": "\n###### Usage \n\n{content}\n"
+      },
+      {
+        "tagName": "myvalueconstraint",
+        "template": "\n{content}\n",
+        "combine": "ul"
+      },
+    ]
+
+And the following documentation in one of your .ts source file:
+
+    /**
+     * Brief description of IMyInterface.
+     * 
+     * @myusage This is an abstract interface. Use [[IMyInterface]] instead.
+     **/
+    export interface IMyInterfaceBase
+    {
+      /**
+       * myProperty is described here.
+       * 
+       * @myvaluecontstraint This value is required.
+       * @myvaluecontstraint This value must not be empty.
+       * @myvaluecontstraint The value must start with a uppercase or lowercase letter (a-z, A-Z).
+       * @myvaluecontstraint The value length must not be greater than 25.
+       **/
+      myProperty: string;
+    }
+
+This typedoc plugin will render the following documentation nodes.
+
+For interface `IMyInterfaceBase`:
+
+    Brief description of IMyInterface.
+
+    ###### Usage 
+
+    This is an abstract interface. Use [[IMyInterface]] instead.
+
+And for property `myProperty`:
+
+    myProperty is described here.
+
+    * This value is required.
+    * This value must not be empty.
+    * The value must start with a uppercase or lowercase letter (a-z, A-Z).
+    * The value length must not be greater than 25.
+
+Markdown parser is used for every single tag value as well as for the every single template.
+
+## Themed Example
+
+When you use this theme you probably also want to use custom CSS rules and assets. According to markdown specification you can also place HTML code. The following example configuration shows how to define a tag rendered as box:
+
+    {
+      "tagName": "warning",
+      "template": "<div class='box warning'>\n<i class='fas fa-exclamation-circle'></i>{content}</div>\n"
+    }
+
+To add your own styles or assets you need to extend the typedoc theme (e.g. to add additional CSS rules). Please refer to [typedoc's official documentation about custom themes](https://typedoc.org/guides/themes/) for more information.
+
+Assuming you have created your own template with a CSS file, these rules are added to the CSS file:
+
+    div.box {
+      padding: 0.5em 1em;
+      border: 2px solid transparent;
+      border-left-width: 3em;
+      margin-bottom: 1em;
+    }
+
+    div.box > i {
+      display: inline-block;
+      margin-left: -3em;
+      margin-right: 2em;
+      color: #ffffff;
+    }
+
+    div.box > ul,
+    div.box > ol {
+      margin: 0;
+      display: inline-grid;
+    }
+
+    div.warning {
+      border-color: #dddd00;
+      background: #dddd0080;
+    }
+
+In the layout template of your theme (`./layouts/default.hbs`) you need to add a link to your stylesheet as well as a link to Font Awesome:
+
+    <!doctype html>
+    <html class="default no-js">
+    <head>
+        [...]
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/solid.min.css" integrity="sha256-3FfMfpeajSEpxWZTFowWZPTv7k3GEu7w4rQv49EWsEY=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/fontawesome.min.css" integrity="sha256-AaQqnjfGDRZd/lUp0Dvy7URGOyRsh8g9JdWUkyYxNfI=" crossorigin="anonymous" />
+
+        <link rel="stylesheet" href="{{relativeURL "assets/css/main.css"}}">
+        <link rel="stylesheet" href="{{relativeURL "assets/css/termingo.css"}}">
+    </head>
+    [...]
+
+In your documentation, just add a `@warning` tag to render the box:
+
+    /**
+     * This is my interface.
+     *
+     * @warning This interface is obsolete. Please use [[IMyNewInterface]] instead.
+     **/
+    export interface IMyInterface {
+      [...]
+    }
+
+This will result in something like this:
+
+![themed-example](https://github.com/shuebner20/typedoc-plugin-custom-tags/raw/master/assets/themed-example.png "Themed Example")
+
+If you find this typedoc plugin useful, you may also be interested in [typedoc-plugin-devops-sourcefile](https://github.com/shuebner20/typedoc-plugin-devops-sourcefile).
