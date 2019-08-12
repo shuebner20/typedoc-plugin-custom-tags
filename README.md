@@ -48,7 +48,13 @@ You can optionally specify how consecutive tags with the same tag name are rende
 
 If you (temporarily) want to exclude a specific tag, you can set the optional `hidden` property to `true`.
 
-## Simple example
+### README Support
+
+If you're using a `README.md` file as homepage of your document, this plugin will also parse this file for occurrences of @tags. Only @tags placed at the start of a line will be processed.
+
+## Examples
+
+### Simple Example
 
 Consider the following example for the config JSON file:
 
@@ -106,7 +112,7 @@ And for property `myProperty`:
 
 Markdown parser is used for every single tag value as well as for the every single template.
 
-## Themed Example
+### Themed Example
 
 When you use this theme you probably also want to use custom CSS rules and assets. According to markdown specification you can also place HTML code. The following example configuration shows how to define a tag rendered as box:
 

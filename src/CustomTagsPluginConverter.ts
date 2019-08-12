@@ -4,7 +4,7 @@ import { Component, ConverterComponent } from "typedoc/dist/lib/converter/compon
 import { Context } from "typedoc/dist/lib/converter/context";
 import { Converter } from "typedoc/dist/lib/converter/converter";
 import { Options } from "typedoc/dist/lib/utils/options";
-import { CommentTag } from "typedoc/dist/lib/models/comments";
+import { CommentTag, Comment } from "typedoc/dist/lib/models/comments";
 import { PluginConstants } from "./PluginConstants";
 import { Reflection } from "typedoc/dist/lib/models/reflections";
 
@@ -58,44 +58,50 @@ export class CustomTagsPluginConverter extends ConverterComponent {
     const reflections: { [id: number]: Reflection } = context.project.reflections;
 
     for (const key in reflections) {
-      const comment = reflections[key].comment;
+      const comment: Comment | undefined = reflections[key].comment;
 
-      if (!comment || !comment.tags) continue;
+      this.resolveComment(comment);
+    }
+  }
 
-      const handledIndexes: number[] = [];
-      const matchingTags: IMatchingTag[][] = [];
-      let previousTagName: string = "";
-      let tagGroup: IMatchingTag[] = [];
-      for (let index: number = 0; index < comment.tags.length; index++) {
-        const tag: CommentTag = comment.tags[index];
-        if (!this._declarations.hasOwnProperty(tag.tagName) || !this._declarations[tag.tagName]) {
-          continue;
-        }
-        const config: ICustomTagDeclaration = this._declarations[tag.tagName];
+  public resolveComment(comment: Comment | undefined): void {
+    if (!comment || !comment.tags) {
+      return;
+    }
 
-        if (previousTagName !== tag.tagName || config.combineMode === TagCombineMode.none) {
-          tagGroup = [];
-          matchingTags.push(tagGroup);
-        }
+    const handledIndexes: number[] = [];
+    const matchingTags: IMatchingTag[][] = [];
+    let previousTagName: string = "";
+    let tagGroup: IMatchingTag[] = [];
+    for (let index: number = 0; index < comment.tags.length; index++) {
+      const tag: CommentTag = comment.tags[index];
+      if (!this._declarations.hasOwnProperty(tag.tagName) || !this._declarations[tag.tagName]) {
+        continue;
+      }
+      const config: ICustomTagDeclaration = this._declarations[tag.tagName];
 
-        if (!config.hidden) {
-          tagGroup.push({
-            index: index,
-            tag: tag,
-            config: config
-          });
-        }
-        handledIndexes.unshift(index);
-
-        previousTagName = tag.tagName;
+      if (previousTagName !== tag.tagName || config.combineMode === TagCombineMode.none) {
+        tagGroup = [];
+        matchingTags.push(tagGroup);
       }
 
-      handledIndexes.forEach((index) => {
-        (comment.tags || []).splice(index, 1);
-      });
+      if (!config.hidden) {
+        tagGroup.push({
+          index: index,
+          tag: tag,
+          config: config
+        });
+      }
+      handledIndexes.unshift(index);
 
-      (comment as any)["matchingTags"] = matchingTags;
+      previousTagName = tag.tagName;
     }
+
+    handledIndexes.forEach((index) => {
+      (comment.tags || []).splice(index, 1);
+    });
+
+    (comment as any)["matchingTags"] = matchingTags;
   }
 
   private _readConfigJson(configPath: string): void {

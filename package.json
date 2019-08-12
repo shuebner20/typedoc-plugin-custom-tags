@@ -1,6 +1,6 @@
 {
   "name": "typedoc-plugin-custom-tags",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "typedoc plugin to define how custom @tags are rendered",
   "author": "Sebastian Hübner",
   "license": "MIT",
