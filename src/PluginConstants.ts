@@ -1,10 +1,9 @@
-export class PluginConstants {
+export namespace PluginConstants {
+  export const ArgumentName = "custom-tags-config";
 
-  public static readonly ArgumentName: string = "custom-tags-config";
+  export const ArgumentDisplayName = "--" + PluginConstants.ArgumentName;
 
-  public static readonly ArgumentDisplayName: string = "--" + PluginConstants.ArgumentName;
+  export const ConverterPluginName = "custom-tags";
 
-  public static readonly ConverterPluginName: string = "custom-tags";
-
-  public static readonly RendererPluginName: string = "custom-tags-renderer";
+  export const RendererPluginName = "custom-tags-renderer";
 }
