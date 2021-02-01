@@ -1,5 +1,5 @@
 import * as FS from "fs-extra";
-import * as Path from "path";
+import path = require("path");
 import { Component, ConverterComponent } from "typedoc/dist/lib/converter/components";
 import { Context } from "typedoc/dist/lib/converter/context";
 import { Converter } from "typedoc/dist/lib/converter/converter";
@@ -110,7 +110,7 @@ export class CustomTagsPluginConverter extends ConverterComponent {
       return;
     }
       // load json
-      const configAbsolutePath: string = Path.join(process.cwd(), configPath);
+      const configAbsolutePath: string = path.join(process.cwd(), configPath);
 
       let json: ICustomTagDeclaration[] | ICustomTagDeclaration | null = null;
       try {
