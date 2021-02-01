@@ -33,7 +33,6 @@
     "@types/node": "^12.19.15",
     "fs-extra": "^8.1.0",
     "handlebars": "^4.7.6",
-    "path": "^0.12.7",
     "typedoc": "^0.15.8",
     "typescript": "^3.9.7"
   }
