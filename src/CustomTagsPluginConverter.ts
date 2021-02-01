@@ -110,7 +110,7 @@ export class CustomTagsPluginConverter extends ConverterComponent {
       return;
     }
       // load json
-      const configAbsolutePath: string = Path.join(process.cwd(), configPath);
+      const configAbsolutePath: string = Path.resolve(configPath);
 
       let json: ICustomTagDeclaration[] | ICustomTagDeclaration | null = null;
       try {
